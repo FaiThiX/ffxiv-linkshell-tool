@@ -19,9 +19,12 @@
 
 const fs = require('fs');
 const XIVAPI = require('@xivapi/js');
+const { randomInt } = require('crypto');
 const sqlite3 = require('sqlite3').verbose();
 
 const xiv = new XIVAPI({ verbose: true });
+const db = new sqlite3.Database('test.db');
+
 
 // Names of your linkshells (case sensitive)
 const linkshell = 'Serrano Hunts';
@@ -53,12 +56,14 @@ async function getcharacters(_linkshell) {
     let membersslice = members.slice(0, 3);
 
     // Create a new database or open an existing one
-    const db = new sqlite3.Database('your_database_name.db');
+
 
     // Create a table for characters
     db.run(`
         CREATE TABLE IF NOT EXISTS characters (
             id INTEGER PRIMARY KEY,
+            uuid INTEGER NOT NULL UNIQUE,
+            charakter_id INTEGER,
             name TEXT,
             server TEXT,
             dc TEXT,
@@ -81,6 +86,7 @@ async function getcharacters(_linkshell) {
     db.run(`
         CREATE TABLE IF NOT EXISTS job_details (
             id INTEGER PRIMARY KEY,
+            uuid INTEGER NOT NULL,
             character_id INTEGER,
             classname TEXT,
             classid INTEGER,
@@ -94,9 +100,11 @@ async function getcharacters(_linkshell) {
 
     for (let mem of membersslice) {
         let char = await xiv.character.get(mem.id, { data: 'MIMO' });
+        uuid = randomInt(10**7, 10**8-1);
         let chardata = char.Character;
         let jobs = chardata.ClassJobs;
         let obj = {
+            uuid: uuid,
             name: chardata.Name,
             id: chardata.ID,
             server: chardata.Server,
@@ -119,13 +127,15 @@ async function getcharacters(_linkshell) {
         db.run(
             `
             INSERT INTO characters (
-                name, server, dc, activejob, freecompany, gender, race, title,
+                uuid, charakter_id, name, server, dc, activejob, freecompany, gender, race, title,
                 bozjanlevel, elementallevel, grandcompany, grandcompanyrank,
                 minions, mounts, timestamp
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
         `,
             [
+                obj.uuid,
+                obj.id,
                 obj.name,
                 obj.server,
                 obj.dc,
@@ -145,7 +155,6 @@ async function getcharacters(_linkshell) {
                 if (err) {
                     console.error(err.message);
                 } else {
-                    const characterId = this.lastID;
 
                     for (let job of jobs) {
                         let jobstuff = {
@@ -160,12 +169,13 @@ async function getcharacters(_linkshell) {
                         db.run(
                             `
                             INSERT INTO job_details (
-                                character_id, classname, classid, level, exp, exptogo, timestamp
+                                uuid, character_id, classname, classid, level, exp, exptogo, timestamp
                             )
-                            VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                         `,
                             [
-                                characterId,
+                                obj.uuid,
+                                obj.id,
                                 jobstuff.classname,
                                 jobstuff.classid,
                                 jobstuff.level,
