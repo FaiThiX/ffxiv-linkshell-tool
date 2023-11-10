@@ -30,7 +30,7 @@ const linkshell = 'Serrano Hunts';
 async function getcwls(_linkshell) {
     let ls = await xiv.linkshell.searchcwl(_linkshell);
     console.log(ls.Results[0]);
-    fs.writeFileSync('linkshell.json', JSON.stringify(ls.Results));
+    //fs.writeFileSync('linkshell.json', JSON.stringify(ls.Results));
     return ls;
 }
 
@@ -43,7 +43,7 @@ async function getmembers(_linkshell) {
         let obj = { name: mem.Name, id: mem.ID, server: mem.Server };
         members.push(obj);
     }
-    fs.writeFileSync('members.json', JSON.stringify(members, null, 4));
+    // fs.writeFileSync('members.json', JSON.stringify(members, null, 4));
     return members;
 }
 
@@ -192,7 +192,7 @@ async function getcharacters(_linkshell) {
     // Close the database connection after all insertions are done
     db.close();
 
-    fs.writeFileSync('characters.json', JSON.stringify(characters, null, 4));
+    //fs.writeFileSync('characters.json', JSON.stringify(characters, null, 4));
     return characters;
 }
 

@@ -1,0 +1,31 @@
+{
+  "name": "ffxiv-linkshell-tool",
+  "version": "0.0.1",
+  "description": "A Tool for FFXIV Linkshell activity",
+  "main": "index.js",
+  "scripts": {
+    "start": "node chat.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FaiThiX/ffxiv-linkshell-tool.git"
+  },
+  "keywords": [
+    "FFXIV",
+    "Linkshell",
+    "Final",
+    "Fantasy",
+    "XIV",
+    "XIVAPI"
+  ],
+  "author": "FaiThiX",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/FaiThiX/ffxiv-linkshell-tool/issues"
+  },
+  "homepage": "https://github.com/FaiThiX/ffxiv-linkshell-tool#readme",
+  "dependencies": {
+    "@xivapi/js": "^0.4.3",
+    "sqlite3": "^5.1.6"
+  }
+}
