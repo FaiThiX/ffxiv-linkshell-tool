@@ -86,13 +86,11 @@ async function getcharacters(_linkshell) {
         CREATE TABLE IF NOT EXISTS job_details (
             id INTEGER PRIMARY KEY,
             uuid INTEGER NOT NULL,
-            character_id INTEGER,
             classname TEXT,
             classid INTEGER,
             level INTEGER,
             exp INTEGER,
             exptogo INTEGER,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (character_id) REFERENCES characters (id)
         )
     `);
