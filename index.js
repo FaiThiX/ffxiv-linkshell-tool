@@ -52,8 +52,7 @@ async function getmembers(_linkshell) {
 
 async function getcharacters(_linkshell) {
     let characters = [];
-    let members = await getmembers(_linkshell);
-    let membersslice = members.slice(0, 3);
+    let members = await getmembers(_linkshell).slice(0, 3);
 
     // Create a new database or open an existing one
 
@@ -98,7 +97,7 @@ async function getcharacters(_linkshell) {
         )
     `);
 
-    for (let mem of membersslice) {
+    for (let mem of members) {
         let char = await xiv.character.get(mem.id, { data: 'MIMO' });
         uuid = randomInt(10**7, 10**8-1);
         let chardata = char.Character;
