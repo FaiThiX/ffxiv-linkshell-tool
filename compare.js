@@ -3,9 +3,8 @@ const utils = require('./utils');
 const db = new sqlite3.Database('test.db');
 const { randomInt } = require('crypto');
 const fs = require('fs');
-
 const uuid = randomInt(10**7, 10**8-1);
-
+const processJSONFilesInFolder = require('./clearjson');
 
 function compareObjects(obj1, obj2) {
     const differences = {};
@@ -120,8 +119,12 @@ async function compare(_linkshell) {
         }
 
         console.log('Class Changes:', JSON.stringify(classChanges, null, 4));
-        fs.writeFileSync(`./${uuid}/classChanges-${mem.name}.json`, JSON.stringify(classChanges, null, 4));
+            fs.writeFileSync(`./${uuid}/classChanges-${mem.name}.json`, JSON.stringify(classChanges, null, 4));
     }
 }
 
 compare(utils.linkshell);
+
+setTimeout(() => {
+    processJSONFilesInFolder(`./${uuid}`);
+}, 20000);
